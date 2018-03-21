@@ -8,3 +8,6 @@ Things you need to do
 
 Intro to the world of back-end development
 
+
+Twitter API
+- Create new app in twitter console [link](https://apps.twitter.com/app/new)
