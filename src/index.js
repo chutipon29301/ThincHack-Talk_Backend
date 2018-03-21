@@ -38,7 +38,10 @@ app.use(bodyParser.json());
 // TODO: Make express send static files
 
 
-// TODO: Config port for server
+// Config port for server
+app.listen(process.env.PORT, _ => {
+    console.log('Listening to port ' + process.env.PORT);
+});
 
 // Connect to SQL database
 con.connect(err => {
@@ -79,7 +82,7 @@ app.get('/add', (req, res) => {
 
 // This method return the specific image from non public folder
 app.get('/getimage', (req,res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../secret_image/Cherprang'));
+    return res.status(200).sendFile(path.join(__dirname, '../secret_image/Cherprang.jpg'));
 });
 
 
