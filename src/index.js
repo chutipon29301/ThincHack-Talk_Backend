@@ -33,49 +33,34 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
-app.listen(process.env.PORT | 3000, () => {
-    console.log('Listening on port 3000');
-});
 
+// TODO: Make express send static files
+
+
+// TODO: Config port for server
+
+// Connect to SQL database
 con.connect(err => {
     if (err) throw err;
     console.log('Connected');
 
-    /**
-     * Register user
-     */
+    // TODO: Fill in method for add user into database
+    // SQL Hint: use `INSERT INTO user VALUE("example@email.com","yourname","yourpassword")`
     app.post('/register', (req, res) => {
-        if (!(req.body.email && req.body.name && req.body.password)) return res.status(400).send('Bad Request');
-        con.query('INSERT INTO user VALUE("' + req.body.email + '","' + req.body.name + '","' + req.body.password + '")', err => {
-            if (err) return res.status(500).send(err);
-            return res.status(200).send('Success');
-        });
     });
 
-    /**
-     * User login
-     */
+    // TODO: Fill in method for check if user is exist in the database and also check if the password is correct
+    // SQL Hint: use `SELECT * FROM user WHERE [your condition]` to get the array of object that match yoour condition
     app.post('/login', (req, res) => {
-        if (!(req.body.email && req.body.password)) return res.status(400).send('Bad Request');
-        con.query('SELECT COUNT(*) FROM user WHERE email = "' + req.body.email + '" AND password = "' + req.body.password + '"', (err, result) => {
-            if (err) return res.status(500).send(err);
-            if (result[0]['COUNT(*)'] === 0) {
-                return res.status(200).send({
-                    isVerify: false
-                });
-            } else {
-                return res.status(200).send({
-                    isVerify: true
-                });
-            }
-        });
     });
 
-    /**
-     * List all user
-     */
+    // TODO: Find the name of the given email
+    // Hint: Use the same query statement like login
+    app.get('/name', (req, res) => {
+    });
+
+    // This method list all the user in the database
     app.get('/list', (req, res) => {
         con.query('SELECT * FROM user', (err, result) => {
             if (err) return res.status(500).send(err);
@@ -83,52 +68,28 @@ con.connect(err => {
         });
     });
 
-    app.get('/name', (req, res) => {
-        if (!req.query.email) return res.status(400).send('Bad Request');
-        con.query('SELECT name, password FROM user WHERE email = "' + req.query.email + '"', (err, result) => {
-            if (err) {
-                console.log(err);
-                return res.status(500).send(err);
-            }
-            res.status(200).send(result[0]);
-        });
-    });
 });
 
-/**
- * Add number
- */
+// This method return the sum of 2 numbers
 app.get('/add', (req, res) => {
     var a = parseInt(req.query.a);
     var b = parseInt(req.query.b);
     return res.status(200).send(a + b + '');
 });
 
-/**
- * Get random image using fs
- */
-app.get('/image', (req, res) => {
-    var files = fs.readdirSync(path.join(__dirname, '../secret_image/'));
-    let index = Math.floor(Math.random() * files.length);
-    res.status(200).sendFile(path.join(__dirname, '../secret_image/', files[index]));
+// This method return the specific image from non public folder
+app.get('/getimage', (req,res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../secret_image/Cherprang'));
 });
 
+
+// TODO: Return random selected image in folder
+// Hint: use `fs.readdirSync(path)` to get the list of file name in folder
+app.get('/image', (req, res) => {
+});
+
+
+// Additional: Return modified search result of twitter
+// For more information about twitter lib [https://github.com/desmondmorris/node-twitter/tree/master/examples#search]
 app.post('/searchTweet', (req, res) => {
-    if (!req.body.search) return res.status(400).send('Bad Request');
-    client.get('search/tweets', {
-        q: req.body.search
-    }, function (error, tweets, response) {
-        var newObject = [];
-        for(let i = 0; i < tweets.statuses.length; i++){
-            newObject.push({
-                user: tweets.statuses[i].user.screen_name,
-                user_image: tweets.statuses[i].user.profile_image_url,
-                text: tweets.statuses[i].text
-            });
-            if(tweets.statuses[i].entities && tweets.statuses[i].entities.media){
-                newObject[i].media = tweets.statuses[i].entities.media[0].media_url;
-            }
-        }
-        res.status(200).send(newObject);
-    });
 });
