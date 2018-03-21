@@ -5,10 +5,10 @@ var fs = require('fs-extra');
 var path = require('path');
 var app = express();
 var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "Non29301",
-    database: 'thincworkshop'
+    host: 'sql12.freesqldatabase.com',
+    user: 'sql12227895',
+    password: 'ajc5611wal',
+    database: 'sql12227895'
 });
 
 app.use(bodyParser.urlencoded({
