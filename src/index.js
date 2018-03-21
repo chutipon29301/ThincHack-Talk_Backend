@@ -113,8 +113,22 @@ app.get('/image', (req, res) => {
     res.status(200).sendFile(path.join(__dirname, '../secret_image/', files[index]));
 });
 
-app.post('/searchTweet', (req,res) => {
-    client.get('search/tweets', {q: 'cherprang'}, function(error, tweets, response) {
-        res.status(200).send(tweets);
-     });
+app.post('/searchTweet', (req, res) => {
+    if (!req.body.search) return res.status(400).send('Bad Request');
+    client.get('search/tweets', {
+        q: req.body.search
+    }, function (error, tweets, response) {
+        var newObject = [];
+        for(let i = 0; i < tweets.statuses.length; i++){
+            newObject.push({
+                user: tweets.statuses[i].user.screen_name,
+                user_image: tweets.statuses[i].user.profile_image_url,
+                text: tweets.statuses[i].text
+            });
+            if(tweets.statuses[i].entities && tweets.statuses[i].entities.media){
+                newObject[i].media = tweets.statuses[i].entities.media[0].media_url;
+            }
+        }
+        res.status(200).send(newObject);
+    });
 });
