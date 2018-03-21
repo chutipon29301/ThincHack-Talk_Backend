@@ -96,3 +96,7 @@ app.get('/image', (req, res) => {
 // For more information about twitter lib [https://github.com/desmondmorris/node-twitter/tree/master/examples#search]
 app.post('/searchTweet', (req, res) => {
 });
+
+app.all('*', (req,res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../public/404.html'));
+});
